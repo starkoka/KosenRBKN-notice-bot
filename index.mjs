@@ -113,6 +113,41 @@ cron.schedule('* * * * *', async () => {
     }
 });
 
+//ステータス更新
+cron.schedule('* * * * *', async () => {
+    const date = new Date();
+    const time = Math.floor(date.getTime() / 1000 / 60)%4
+    switch(time){
+        case 1:
+            client.user.setPresence({
+                activities: [{
+                    name: `ヘルプ:/help`
+                }],
+            });
+            break;
+        case 2:
+            client.user.setPresence({
+                activities: [{
+                    name: `管理者ヘルプ:/admin-help`
+                }],
+            });
+            break;
+        case 3:
+            client.user.setPresence({
+                activities: [{
+                    name: `概要:/about`
+                }],
+            });
+            break;
+        default:
+            client.user.setPresence({
+                activities: [{
+                    name: `導入数：${client.guilds.cache.size}サーバー`
+                }],
+            });
+    }
+});
+
 //StringSelectMenu受け取り
 client.on(Events.InteractionCreate, async interaction => {
     if(interaction.isStringSelectMenu()) {
