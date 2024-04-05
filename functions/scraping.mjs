@@ -9,7 +9,6 @@ export async function fetchWebsite(){
     const res = await fetch(url);
     const html = await res.text();
 
-    console.log(html);
     const yesterdayData = await find("main","data",{dataType:"today"});
     if(yesterdayData.length !== 0){
         await updateOrInsert("main","data",{dataType:"yesterday"},{

@@ -56,7 +56,8 @@ module.exports = [
     {
         data: new SlashCommandBuilder()
             .setName('add-channel')
-            .setDescription('HP更新通知を受け取るチャンネルに追加します'),
+            .setDMPermission(false)
+            .setDescription('実行したチャンネルを、HP更新通知を受け取るチャンネルに追加します'),
         async execute(interaction) {
             await interaction.deferReply({ephemeral: true});
             await db.updateOrInsert("main","channel",{channelId:interaction.channelId},{
@@ -68,7 +69,8 @@ module.exports = [
     {
         data: new SlashCommandBuilder()
             .setName('del-channel')
-            .setDescription('HP更新通知を受け取るチャンネルから除外します'),
+            .setDMPermission(false)
+            .setDescription('実行したチャンネルを、HP更新通知を受け取るチャンネルから除外します'),
         async execute(interaction) {
             await interaction.deferReply({ephemeral: true});
             await db.delete("main","channel",{channelId:interaction.channelId});
