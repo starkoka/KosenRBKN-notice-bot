@@ -79,4 +79,29 @@ module.exports = [
             await interaction.editReply("削除しました");
         },
     },
+
+    {
+        data: new SlashCommandBuilder()
+            .setName('send-to-dm')
+            .setDescription('DMで更新通知を受け取るかどうかを設定します')
+            .addBooleanOption(option =>
+                option
+                    .setName('option')
+                    .setDescription('True or False')
+                    .setRequired(true)
+            ),
+        async execute(interaction) {
+            await interaction.deferReply({ephemeral: true});
+            if(interaction.options.getBoolean('option')){
+                await db.updateOrInsert("main","users",{userId:interaction.user.id},{
+                    userId:interaction.user.id
+                });
+                await interaction.editReply("登録しました");
+            }
+            else{
+                await db.delete("main","users",{userId:interaction.user.id});
+                await interaction.editReply("解除しました");
+            }
+        },
+    },
 ]

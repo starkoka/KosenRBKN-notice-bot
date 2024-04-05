@@ -78,7 +78,7 @@ client.on("interactionCreate", async(interaction) => {
 });
 
 //今日のデータを取得
-cron.schedule('0 19 * * *', async () => {
+cron.schedule('* * * * *', async () => {
     await fetchWebsite();
     const yesterdayData = await find("main","data",{dataType:"yesterday"});
     const todayData = await find("main","data",{dataType:"today"});
@@ -110,6 +110,14 @@ cron.schedule('0 19 * * *', async () => {
             for(const channel of channels){
                 try{
                     await (client.channels.cache.get(channel.channelId) ?? await client.channels.fetch(channel.channelId)).send({embeds:[embed]})
+                }
+                catch{}
+            }
+
+            const users = await find("main","users",{});
+            for(const user of users){
+                try{
+                    await (client.users.cache.get(user.userId) ?? await client.users.fetch(user.userId)).send({embeds:[embed]});
                 }
                 catch{}
             }
