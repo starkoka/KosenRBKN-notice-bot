@@ -78,7 +78,7 @@ client.on("interactionCreate", async(interaction) => {
 });
 
 //今日のデータを取得
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 19 * * *', async () => {
     await fetchWebsite();
     const yesterdayData = await find("main","data",{dataType:"yesterday"});
     const todayData = await find("main","data",{dataType:"today"});
