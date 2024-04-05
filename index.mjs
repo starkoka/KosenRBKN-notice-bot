@@ -1,6 +1,8 @@
-const { Client, GatewayIntentBits, Partials, Collection, Events} = require('discord.js');
-const path = require('path');
-const fs = require('fs');
+import { Client, GatewayIntentBits, Partials, Collection, Events} from 'discord.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+import cron from 'node-cron';
 global.client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -9,20 +11,24 @@ global.client = new Client({
 });
 
 //configファイル読み込み
-const config = require('./config.json')
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const configPath = path.resolve(__dirname, './config.json');
+const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
 //関数読み込み
-const system = require('./functions/logsystem.js');
+import system from './functions/logsystem.js';
+import {fetchWebsite} from './functions/scraping.mjs';
 
 //スラッシュコマンド登録
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 client.commands = new Collection();
-module.exports = client.commands;
+//module.exports = client.commands;
 client.once("ready", async() => {
     for(const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
-        const command = require(filePath);
+        const command = (await import(filePath)).default;
         for(let i = 0; i < command.length; i++) {
             client.commands.set(command[i].data.name, command[i]);
         }
@@ -69,5 +75,11 @@ client.on("interactionCreate", async(interaction) => {
         }
     }
 });
+
+//今日のデータを取得
+cron.schedule('* * * * *', async () => {
+    await fetchWebsite();
+});
+
 
 client.login(config.token);
