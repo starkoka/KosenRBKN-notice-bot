@@ -60,7 +60,7 @@ module.exports = [
             .setDescription('実行したチャンネルを、HP更新通知を受け取るチャンネルに追加します'),
         async execute(interaction) {
             await interaction.deferReply({ephemeral: true});
-            await db.updateOrInsert("main","channel",{channelId:interaction.channelId},{
+            await db.updateOrInsert("main","channels",{channelId:interaction.channelId},{
                 channelId:interaction.channelId
             });
             await interaction.editReply("追加しました");
@@ -73,7 +73,7 @@ module.exports = [
             .setDescription('実行したチャンネルを、HP更新通知を受け取るチャンネルから除外します'),
         async execute(interaction) {
             await interaction.deferReply({ephemeral: true});
-            await db.delete("main","channel",{channelId:interaction.channelId});
+            await db.delete("main","channels",{channelId:interaction.channelId});
             await interaction.editReply("削除しました");
         },
     },
