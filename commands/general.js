@@ -57,6 +57,7 @@ module.exports = [
         data: new SlashCommandBuilder()
             .setName('add-channel')
             .setDMPermission(false)
+            .setDefaultMemberPermissions(1<<3)
             .setDescription('実行したチャンネルを、HP更新通知を受け取るチャンネルに追加します'),
         async execute(interaction) {
             await interaction.deferReply({ephemeral: true});
@@ -70,6 +71,7 @@ module.exports = [
         data: new SlashCommandBuilder()
             .setName('del-channel')
             .setDMPermission(false)
+            .setDefaultMemberPermissions(1<<3)
             .setDescription('実行したチャンネルを、HP更新通知を受け取るチャンネルから除外します'),
         async execute(interaction) {
             await interaction.deferReply({ephemeral: true});
