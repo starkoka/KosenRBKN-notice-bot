@@ -21,11 +21,11 @@ module.exports = [
 
             if(yesterdayData.length === 0 || todayData.length === 0){
                 const embed = new EmbedBuilder()
-                    .setColor(0x00A0EA)
+                    .setColor(0x43B07C)
                     .setTitle('HP更新確認')
                     .setAuthor({
-                        name: "高専ロボコンHP更新お知らせbot",
-                        iconURL: 'https://media.discordapp.net/attachments/1004598980929404960/1039920326903087104/nitkc22io-1.png',
+                        name: "[非公式]高専ロボコンHP更新お知らせbot",
+                        iconURL: 'https://cdn.discordapp.com/avatars/1225690618123124736/539e20d2d9e586443173f358989c81b4.webp',
                         url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
                     })
                     .setDescription('データが不足しています。\n1日立っても治らない場合は、[issue](https://github.com/starkoka/KosenRBKN-notice-bot/issues)への報告をお願いします。')
@@ -40,11 +40,11 @@ module.exports = [
             const text = yesterdayData[0].value === todayData[0].value ? "公式HPは更新されていません。" : "[公式HP](https://official-robocon.com/kosen/)が更新されています。";
 
             const embed = new EmbedBuilder()
-                .setColor(0x00A0EA)
+                .setColor(0x43B07C)
                 .setTitle('HP更新確認')
                 .setAuthor({
-                    name: "高専ロボコンHP更新お知らせbot",
-                    iconURL: 'https://media.discordapp.net/attachments/1004598980929404960/1039920326903087104/nitkc22io-1.png',
+                    name: "[非公式]高専ロボコンHP更新お知らせbot",
+                    iconURL: 'https://cdn.discordapp.com/avatars/1225690618123124736/539e20d2d9e586443173f358989c81b4.webp',
                     url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
                 })
                 .setDescription(`${text}${lastUpdata}`)

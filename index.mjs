@@ -94,11 +94,11 @@ cron.schedule('* * * * *', async () => {
             const lastUpdateData = await db.find("main","data",{dataType:"lastUpdateDate"});
             const lastUpdata = lastUpdateData.length === 0 ? "" : `\n\nHP最終更新日時 : ${lastUpdateData[0].value}`;
             const embed = new EmbedBuilder()
-                .setColor(0x00A0EA)
+                .setColor(0x43B07C)
                 .setTitle('HP更新確認')
                 .setAuthor({
-                    name: "高専ロボコンHP更新お知らせbot",
-                    iconURL: 'https://media.discordapp.net/attachments/1004598980929404960/1039920326903087104/nitkc22io-1.png',
+                    name: "[非公式]高専ロボコンHP更新お知らせbot",
+                    iconURL: 'https://cdn.discordapp.com/avatars/1225690618123124736/539e20d2d9e586443173f358989c81b4.webp',
                     url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
                 })
                 .setDescription(`[公式HP](https://official-robocon.com/kosen/)が更新されています。${lastUpdata}`)
