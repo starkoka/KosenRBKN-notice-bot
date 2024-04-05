@@ -113,6 +113,14 @@ cron.schedule('0 19 * * *', async () => {
                 }
                 catch{}
             }
+
+            const users = await find("main","users",{});
+            for(const user of users){
+                try{
+                    await (client.users.cache.get(user.userId) ?? await client.users.fetch(user.userId)).send({embeds:[embed]});
+                }
+                catch{}
+            }
         }
     }
 });

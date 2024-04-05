@@ -57,6 +57,7 @@ module.exports = [
         data: new SlashCommandBuilder()
             .setName('add-channel')
             .setDMPermission(false)
+            .setDefaultMemberPermissions(1<<3)
             .setDescription('実行したチャンネルを、HP更新通知を受け取るチャンネルに追加します'),
         async execute(interaction) {
             await interaction.deferReply({ephemeral: true});
@@ -70,11 +71,37 @@ module.exports = [
         data: new SlashCommandBuilder()
             .setName('del-channel')
             .setDMPermission(false)
+            .setDefaultMemberPermissions(1<<3)
             .setDescription('実行したチャンネルを、HP更新通知を受け取るチャンネルから除外します'),
         async execute(interaction) {
             await interaction.deferReply({ephemeral: true});
             await db.delete("main","channels",{channelId:interaction.channelId});
             await interaction.editReply("削除しました");
+        },
+    },
+
+    {
+        data: new SlashCommandBuilder()
+            .setName('send-to-dm')
+            .setDescription('DMで更新通知を受け取るかどうかを設定します')
+            .addBooleanOption(option =>
+                option
+                    .setName('option')
+                    .setDescription('True or False')
+                    .setRequired(true)
+            ),
+        async execute(interaction) {
+            await interaction.deferReply({ephemeral: true});
+            if(interaction.options.getBoolean('option')){
+                await db.updateOrInsert("main","users",{userId:interaction.user.id},{
+                    userId:interaction.user.id
+                });
+                await interaction.editReply("登録しました");
+            }
+            else{
+                await db.delete("main","users",{userId:interaction.user.id});
+                await interaction.editReply("解除しました");
+            }
         },
     },
 ]
