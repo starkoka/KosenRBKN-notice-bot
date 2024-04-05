@@ -1,0 +1,24 @@
+{
+  "name": "kosenrbkn-notice-bot",
+  "version": "1.0.0",
+  "description": "高専ロボコン公式HPが更新されるとお知らせするbotです",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starkoka/KosenRBKN-notice-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/starkoka/KosenRBKN-notice-bot/issues"
+  },
+  "homepage": "https://github.com/starkoka/KosenRBKN-notice-bot#readme",
+  "dependencies": {
+    "@discordjs/rest": "^2.2.0",
+    "discord.js": "^14.14.1",
+    "enquirer": "^2.4.1"
+  }
+}
