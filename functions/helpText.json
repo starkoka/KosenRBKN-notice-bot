@@ -20,6 +20,10 @@
         "description":"その他機能の説明です。\n",
         "field":[
           {
+            "name":"/last-updata",
+            "value":"> 最終更新日を確認できます。"
+          },
+          {
             "name":"/ping",
             "value":"> このBOTのpingを確認できます。"
           },
