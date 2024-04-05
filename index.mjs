@@ -1,6 +1,8 @@
-const { Client, GatewayIntentBits, Partials, Collection, Events} = require('discord.js');
-const path = require('path');
-const fs = require('fs');
+import {Client, GatewayIntentBits, Partials, Collection, Events, EmbedBuilder} from 'discord.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+import cron from 'node-cron';
 global.client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -9,20 +11,26 @@ global.client = new Client({
 });
 
 //configファイル読み込み
-const config = require('./config.json')
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const configPath = path.resolve(__dirname, './config.json');
+const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
 //関数読み込み
-const system = require('./functions/logsystem.js');
+import system from './functions/logsystem.js';
+import {fetchWebsite} from './functions/scraping.mjs';
+import db, {find,updateOrInsert} from './functions/db.js';
+import {adminHelpDisplay,helpDisplay} from "./functions/help.js";
 
 //スラッシュコマンド登録
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 client.commands = new Collection();
-module.exports = client.commands;
+//module.exports = client.commands;
 client.once("ready", async() => {
     for(const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
-        const command = require(filePath);
+        const command = (await import(filePath)).default;
         for(let i = 0; i < command.length; i++) {
             client.commands.set(command[i].data.name, command[i]);
         }
@@ -69,5 +77,53 @@ client.on("interactionCreate", async(interaction) => {
         }
     }
 });
+
+//今日のデータを取得
+cron.schedule('* * * * *', async () => {
+    const updata = await fetchWebsite();
+    if(updata){
+        const embed = new EmbedBuilder()
+            .setColor(0x43B07C)
+            .setTitle('HP更新確認')
+            .setAuthor({
+                name: "[非公式]高専ロボコンHP更新お知らせbot",
+                iconURL: 'https://cdn.discordapp.com/avatars/1225690618123124736/539e20d2d9e586443173f358989c81b4.webp',
+                url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
+            })
+            .setDescription(`[公式HP](https://official-robocon.com/kosen/)が更新されています。`)
+            .setTimestamp()
+            .setFooter({ text: 'Developed by kokastar' });
+
+
+        const channels = await find("main","channels",{});
+        for(const channel of channels){
+            try{
+                await (client.channels.cache.get(channel.channelId) ?? await client.channels.fetch(channel.channelId)).send({embeds:[embed]})
+            }
+            catch{}
+        }
+
+        const users = await find("main","users",{});
+        for(const user of users){
+            try{
+                await (client.users.cache.get(user.userId) ?? await client.users.fetch(user.userId)).send({embeds:[embed]});
+            }
+            catch{}
+        }
+    }
+});
+
+//StringSelectMenu受け取り
+client.on(Events.InteractionCreate, async interaction => {
+    if(interaction.isStringSelectMenu()) {
+        if (interaction.customId === "adminHelp"){
+            await adminHelpDisplay(interaction);
+        }
+        else if (interaction.customId === "help"){
+            await helpDisplay(interaction);
+        }
+    }
+});
+
 
 client.login(config.token);
