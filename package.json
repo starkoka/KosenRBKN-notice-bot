@@ -21,6 +21,7 @@
     "discord.js": "^14.14.1",
     "enquirer": "^2.4.1",
     "jsdom": "^24.0.0",
+    "mongodb": "^6.5.0",
     "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2"
   }
