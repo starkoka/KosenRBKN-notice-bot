@@ -6,6 +6,7 @@ import cron from 'node-cron';
 global.client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
     ],
     partials: [Partials.Channel],
 });
