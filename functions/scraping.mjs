@@ -2,8 +2,6 @@ import fetch from 'node-fetch';
 import jsdom from 'jsdom';
 import {find,updateOrInsert} from './db.js';
 
-const { JSDOM } = jsdom;
-
 export async function fetchWebsite(){
     const url = "https://official-robocon.com/kosen/";
     const res = await fetch(url);
