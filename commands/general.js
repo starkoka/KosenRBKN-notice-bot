@@ -37,7 +37,7 @@ module.exports = [
 
             const lastUpdateData = await db.find("main","data",{dataType:"lastUpdateDate"});
             const lastUpdata = lastUpdateData.length === 0 ? "" : `\n\nHP最終更新日時 : ${lastUpdateData[0].value}`;
-            const text = yesterdayData[0].value === todayData[0].value ? "HPは更新されていません。" : "HPが更新されています。";
+            const text = yesterdayData[0].value === todayData[0].value ? "公式HPは更新されていません。" : "[公式HP](https://official-robocon.com/kosen/)が更新されています。";
 
             const embed = new EmbedBuilder()
                 .setColor(0x00A0EA)

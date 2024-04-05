@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Partials, Collection, Events} from 'discord.js';
+import {Client, GatewayIntentBits, Partials, Collection, Events, EmbedBuilder} from 'discord.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
@@ -19,7 +19,7 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 //関数読み込み
 import system from './functions/logsystem.js';
 import {fetchWebsite} from './functions/scraping.mjs';
-import {find,updateOrInsert} from './functions/db.js';
+import db, {find,updateOrInsert} from './functions/db.js';
 
 //スラッシュコマンド登録
 const commandsPath = path.join(__dirname, 'commands');
@@ -90,6 +90,29 @@ cron.schedule('* * * * *', async () => {
                 dataType:"lastUpdateDate",
                 value:now
             });
+
+            const lastUpdateData = await db.find("main","data",{dataType:"lastUpdateDate"});
+            const lastUpdata = lastUpdateData.length === 0 ? "" : `\n\nHP最終更新日時 : ${lastUpdateData[0].value}`;
+            const embed = new EmbedBuilder()
+                .setColor(0x00A0EA)
+                .setTitle('HP更新確認')
+                .setAuthor({
+                    name: "高専ロボコンHP更新お知らせbot",
+                    iconURL: 'https://media.discordapp.net/attachments/1004598980929404960/1039920326903087104/nitkc22io-1.png',
+                    url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
+                })
+                .setDescription(`[公式HP](https://official-robocon.com/kosen/)が更新されています。${lastUpdata}`)
+                .setTimestamp()
+                .setFooter({ text: 'Developed by kokastar' });
+
+
+            const channels = await find("main","channels",{});
+            for(const channel of channels){
+                try{
+                    await (client.channels.cache.get(channel.channelId) ?? await client.channels.fetch(channel.channelId)).send({embeds:[embed]})
+                }
+                catch{}
+            }
         }
     }
 });
