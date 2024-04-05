@@ -10,16 +10,16 @@ export async function fetchWebsite(){
     const html = await res.text();
 
     console.log(html);
-    const yesterdayData = await find("main","data",{date:0});
-    if(yesterData.length() !== 0){
-        await updateOrInsert("main","data",{date:-1},{
-            date:-1,
-            html:yesterdayData[0].html
+    const yesterdayData = await find("main","data",{dataType:"today"});
+    if(yesterdayData.length !== 0){
+        await updateOrInsert("main","data",{dataType:"yesterday"},{
+            dataType:"yesterday",
+            value:yesterdayData[0].value
         });
     }
 
-    await updateOrInsert("main","data",{date:0},{
-        date:0,
-        html:html
+    await updateOrInsert("main","data",{dataType:"today"},{
+        dataType:"today",
+        value:html
     });
 }

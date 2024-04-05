@@ -19,6 +19,7 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 //関数読み込み
 import system from './functions/logsystem.js';
 import {fetchWebsite} from './functions/scraping.mjs';
+import {find,updateOrInsert} from './functions/db.js';
 
 //スラッシュコマンド登録
 const commandsPath = path.join(__dirname, 'commands');
@@ -79,6 +80,18 @@ client.on("interactionCreate", async(interaction) => {
 //今日のデータを取得
 cron.schedule('* * * * *', async () => {
     await fetchWebsite();
+    const yesterdayData = await find("main","data",{dataType:"yesterday"});
+    const todayData = await find("main","data",{dataType:"today"});
+    if(yesterdayData.length!==0 && todayData.length!==0){
+        if(yesterdayData[0].value !== todayData[0].value){
+            const date = new Date().toLocaleString();
+            const now = date.substr(0,date.indexOf(' '));
+            await updateOrInsert("main","data",{dataType:"lastUpdateDate"},{
+                dataType:"lastUpdateDate",
+                value:now
+            });
+        }
+    }
 });
 
 
