@@ -20,6 +20,7 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 import system from './functions/logsystem.js';
 import {fetchWebsite} from './functions/scraping.mjs';
 import db, {find,updateOrInsert} from './functions/db.js';
+import {adminHelpDisplay,helpDisplay} from "./functions/help.js";
 
 //スラッシュコマンド登録
 const commandsPath = path.join(__dirname, 'commands');
@@ -121,6 +122,18 @@ cron.schedule('0 19 * * *', async () => {
                 }
                 catch{}
             }
+        }
+    }
+});
+
+//StringSelectMenu受け取り
+client.on(Events.InteractionCreate, async interaction => {
+    if(interaction.isStringSelectMenu()) {
+        if (interaction.customId === "adminHelp"){
+            await adminHelpDisplay(interaction);
+        }
+        else if (interaction.customId === "help"){
+            await helpDisplay(interaction);
         }
     }
 });

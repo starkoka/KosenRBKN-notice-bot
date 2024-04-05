@@ -1,0 +1,94 @@
+{
+  "help": [
+    {
+      "shortDescription": "DMにお知らせする機能の説明です",
+      "value": {
+        "title": "DMにお知らせ",
+        "description":"HPが更新された時、DMにお知らせする機能です。\n",
+        "field":[
+          {
+            "name":"/sent-to-dm",
+            "value":"> DMに送信するか設定できます。\n> Trueの場合はDMに送信し、Falseの場合はDMに送信しません。"
+          }
+        ]
+      }
+    },
+    {
+      "shortDescription": "その他の機能の説明です",
+      "value": {
+        "title": "その他機能",
+        "description":"その他機能の説明です。\n",
+        "field":[
+          {
+            "name":"/ping",
+            "value":"> このBOTのpingを確認できます。"
+          },
+          {
+            "name":"/about",
+            "value":"> このBOTの情報を確認できます。"
+          },
+          {
+            "name":"/admin-help",
+            "value":"> 管理者向けヘルプを表示できます。(管理者限定)"
+          }
+        ]
+      }
+    },
+    {
+      "shortDescription": "BOTの運営とサポートについてです。",
+      "value": {
+        "title": "BOTの運営とサポート",
+        "description":"BOTの運営とサポートは、下記のとおりです。\n",
+        "field":[
+          {
+            "name":"ソースコード",
+            "value":"> このBOTは、オープンソースとなっています。[GitHub](https://github.com/starkoka/KosenRBKN-notice-bot)にて公開されています。\n"
+          },{
+            "name":"サポート",
+            "value":"> 不明点等ありましたら、DiscordでID:kokastarまでDMを送っていただければ、対応します。\n"
+          }, {
+            "name":"バグの報告先",
+            "value":"> [Issue](https://github.com/starkoka/KosenRBKN-notice-bot/issues)に書いてもらうか、サポートへ連絡をお願いします。\n"
+          }
+        ]
+      }
+    }
+  ],
+  "admin": [
+    {
+      "shortDescription": "チャンネルにお知らせする機能説明です",
+      "value": {
+        "title": "チャンネルにお知らせ",
+        "description":"HPが更新されたときにチャンネルにお知らせする機能です。",
+        "field":[
+          {
+            "name":"/add-channel",
+            "value":"> 実行したチャンネルにお知らせするようにします。(管理者限定)\n"
+          }, {
+            "name":"/del-channel",
+            "value":"> 実行したチャンネルにお知らせを送信するのをやめます。(管理者限定)\n"
+          }
+        ]
+      }
+    },
+    {
+      "shortDescription": "BOTの運営とサポートについてです。",
+      "value": {
+        "title": "BOTの運営とサポート",
+        "description":"BOTの運営とサポートは、下記のとおりです。\n",
+        "field":[
+          {
+            "name":"ソースコード",
+            "value":"> このBOTは、オープンソースとなっています。[GitHub](https://github.com/starkoka/KosenRBKN-notice-bot)にて公開されています。\n"
+          },{
+            "name":"サポート",
+            "value":"> 不明点等ありましたら、DiscordでID:kokastarまでDMを送っていただければ、対応します。\n"
+          }, {
+            "name":"バグの報告先",
+            "value":"> [Issue](https://github.com/starkoka/KosenRBKN-notice-bot/issues)に書いてもらうか、サポートへ連絡をお願いします。\n"
+          }
+        ]
+      }
+    }
+  ]
+}

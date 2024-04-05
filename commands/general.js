@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder , version} = require('discord.js');
 const db = require('../functions/db.js');
+const help = require("../functions/help.js");
+const packageVer = require('../package.json');
 
 module.exports = [
     {
@@ -102,6 +104,69 @@ module.exports = [
                 await db.delete("main","users",{userId:interaction.user.id});
                 await interaction.editReply("解除しました");
             }
+        },
+    },
+    {
+        data: new SlashCommandBuilder()
+            .setName('help')
+            .setDescription('このBOTのヘルプを表示します'),
+        async execute(interaction) {
+            await help.helpSend(interaction);
+        },
+    },
+    {
+        data: new SlashCommandBuilder()
+            .setName('admin-help')
+            .setDescription('管理者向けメニューをDMで表示します。')
+            .setDefaultMemberPermissions(1<<3)
+            .setDMPermission(false),
+        async execute(interaction) {
+            await interaction.reply({ content: "DMに管理者向けメニューを送信しました。受信できていない場合、以下に該当していないかどうかご確認ください。\n・このサーバー上の他のメンバーからのDMをOFFにしている\n・フレンドからのDMのみを許可している\n・このBOTをブロックしている", ephemeral: true });
+            await help.adminHelpSend(interaction.user);
+        },
+    },
+    {
+        data: new SlashCommandBuilder()
+            .setName('about')
+            .setDescription('このBOTの概要を表示します'),
+        async execute(interaction) {
+            const embed = new EmbedBuilder()
+                .setColor(0x43B07C)
+                .setTitle('高専ロボコンHP更新お知らせbot概要')
+                .setAuthor({
+                    name: "[非公式]高専ロボコンHP更新お知らせbot",
+                    iconURL: 'https://cdn.discordapp.com/avatars/1225690618123124736/539e20d2d9e586443173f358989c81b4.webp',
+                    url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
+                })
+                .setDescription('このbotの概要を紹介します')
+                .addFields(
+                    [
+                        {
+                            name: 'バージョン情報',
+                            value: 'v' + packageVer.version,
+                        },
+                        {
+                            name: '開発者',
+                            value: '[kokastar](https://github.com/starkoka)が開発・運用しています。',
+                        },
+                        {
+                            name:"ソースコード",
+                            value:"このBOTは、オープンソースとなっています。[GitHub](https://github.com/starkoka/KosenRBKN-notice-bot)にて公開されています。\n"
+                        },
+                        {
+                            name:"バグの報告先",
+                            value:"[Issue](https://github.com/starkoka/KosenRBKN-notice-bot/issues)までお願いします。\nサポート等の詳細は/helpや/admin-helpを実行してください。\n"
+                        },
+                        {
+                            name: '実行環境',
+                            value: 'node.js v' + process.versions.node + `\n discord.js v` + version + `\n MongoDB 6.0 Powered by AWS`,
+
+                        },
+                    ]
+                )
+                .setTimestamp()
+                .setFooter({ text: 'Developed by kokastar' });
+            await interaction.reply({ embeds: [embed] });
         },
     },
 ]
