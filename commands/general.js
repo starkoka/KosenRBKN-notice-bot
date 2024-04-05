@@ -1,8 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder , version} = require('discord.js');
 const db = require('../functions/db.js');
 
-module.exports =
-[
+module.exports = [
     {
         data: new SlashCommandBuilder()
             .setName('ping')
@@ -52,6 +51,28 @@ module.exports =
                 .setTimestamp()
                 .setFooter({ text: 'Developed by kokastar' });
             await interaction.editReply({ embeds: [embed] });
+        },
+    },
+    {
+        data: new SlashCommandBuilder()
+            .setName('add-channel')
+            .setDescription('HP更新通知を受け取るチャンネルに追加します'),
+        async execute(interaction) {
+            await interaction.deferReply({ephemeral: true});
+            await db.updateOrInsert("main","channel",{channelId:interaction.channelId},{
+                channelId:interaction.channelId
+            });
+            await interaction.editReply("追加しました");
+        },
+    },
+    {
+        data: new SlashCommandBuilder()
+            .setName('del-channel')
+            .setDescription('HP更新通知を受け取るチャンネルから除外します'),
+        async execute(interaction) {
+            await interaction.deferReply({ephemeral: true});
+            await db.delete("main","channel",{channelId:interaction.channelId});
+            await interaction.editReply("削除しました");
         },
     },
 ]
