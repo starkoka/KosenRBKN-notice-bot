@@ -49,5 +49,5 @@ export async function generate(before, after) {
         </body>
         </html>
         `;
-    fs.writeFileSync('diffcheckr.html', config.diff);
+    fs.writeFileSync(config.diff, htmlTemplate);
 }
