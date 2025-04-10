@@ -13,6 +13,7 @@ config.json
   "logSystem": "LOG_CHANNEL_ID",
   "errorSystem": "ERRORLOG_CHANNEL_ID",
   "client": "YOUR_BOT_ID",
-  "db": "DATABASE_URL"
+  "db": "DATABASE_URL",
+  "diff": "DIFF_PAGE_PASS"
 }
 ```

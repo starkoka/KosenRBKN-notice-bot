@@ -18,6 +18,7 @@
   "homepage": "https://github.com/starkoka/KosenRBKN-notice-bot#readme",
   "dependencies": {
     "@discordjs/rest": "^2.2.0",
+    "diff": "^7.0.0",
     "discord.js": "^14.14.1",
     "enquirer": "^2.4.1",
     "jsdom": "^24.0.0",

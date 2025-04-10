@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
-import jsdom from 'jsdom';
 import {find,updateOrInsert} from './db.js';
+import {generate} from './diffpage.js';
 
 export async function fetchWebsite(){
     try{
@@ -20,6 +20,8 @@ export async function fetchWebsite(){
                 return false;
             }
         }
+
+        generate(beforeData[0].value,html);
 
         await updateOrInsert("main","data",{dataType:"before"},{
             dataType:"before",
