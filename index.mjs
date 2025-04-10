@@ -79,39 +79,42 @@ client.on("interactionCreate", async(interaction) => {
     }
 });
 
-//今日のデータを取得
-cron.schedule('* * * * *', async () => {
-    const updata = await fetchWebsite();
-    if(updata){
-        const embed = new EmbedBuilder()
-            .setColor(0x43B07C)
-            .setTitle('HP更新確認')
-            .setAuthor({
-                name: "[非公式]高専ロボコンHP更新お知らせbot",
-                iconURL: 'https://cdn.discordapp.com/avatars/1225690618123124736/539e20d2d9e586443173f358989c81b4.webp',
-                url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
-            })
-            .setDescription(`[公式HP](https://official-robocon.com/kosen/)が更新されています。`)
-            .setTimestamp()
-            .setFooter({ text: 'Developed by kokastar' });
+//現在データを取得
+cron.schedule('*/10 * * * *', async () => {
+    try{
+        const updata = await fetchWebsite();
+        if(updata){
+            const embed = new EmbedBuilder()
+                .setColor(0x43B07C)
+                .setTitle('HP更新確認')
+                .setAuthor({
+                    name: "[非公式]高専ロボコンHP更新お知らせbot",
+                    iconURL: 'https://cdn.discordapp.com/avatars/1225690618123124736/539e20d2d9e586443173f358989c81b4.webp',
+                    url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
+                })
+                .setDescription(`[公式HP](https://official-robocon.com/kosen/)が更新されています。\n\n更新の差分は[こちら](https://kokastar.dev/kosenRBKN-HPDiff.html)から確認できます。`)
+                .setTimestamp()
+                .setFooter({ text: 'Developed by kokastar' });
 
 
-        const channels = await find("main","channels",{});
-        for(const channel of channels){
-            try{
-                await (client.channels.cache.get(channel.channelId) ?? await client.channels.fetch(channel.channelId)).send({embeds:[embed]})
+            const channels = await find("main","channels",{});
+            for(const channel of channels){
+                try{
+                    await (client.channels.cache.get(channel.channelId) ?? await client.channels.fetch(channel.channelId)).send({embeds:[embed]})
+                }
+                catch{}
             }
-            catch{}
-        }
 
-        const users = await find("main","users",{});
-        for(const user of users){
-            try{
-                await (client.users.cache.get(user.userId) ?? await client.users.fetch(user.userId)).send({embeds:[embed]});
+            const users = await find("main","users",{});
+            for(const user of users){
+                try{
+                    await (client.users.cache.get(user.userId) ?? await client.users.fetch(user.userId)).send({embeds:[embed]});
+                }
+                catch{}
             }
-            catch{}
         }
     }
+    catch{}
 });
 
 //ステータス更新
