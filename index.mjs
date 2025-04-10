@@ -92,7 +92,7 @@ cron.schedule('*/10 * * * *', async () => {
                     iconURL: 'https://cdn.discordapp.com/avatars/1225690618123124736/539e20d2d9e586443173f358989c81b4.webp',
                     url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
                 })
-                .setDescription(`[公式HP](https://official-robocon.com/kosen/)が更新されています。`)
+                .setDescription(`[公式HP](https://official-robocon.com/kosen/)が更新されています。\n\n更新の差分は[こちら](https://kokastar.dev/kosenRBKN-HPDiff.html)から確認できます。`)
                 .setTimestamp()
                 .setFooter({ text: 'Developed by kokastar' });
 
