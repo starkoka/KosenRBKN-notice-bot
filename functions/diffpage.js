@@ -50,4 +50,5 @@ export async function generate(before, after) {
         </html>
         `;
     fs.writeFileSync(config.diff, htmlTemplate);
+    return diffStr;
 }
