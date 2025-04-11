@@ -22,6 +22,7 @@ import system from './functions/logsystem.js';
 import {fetchWebsite} from './functions/scraping.mjs';
 import db, {find,updateOrInsert} from './functions/db.js';
 import {adminHelpDisplay,helpDisplay} from "./functions/help.js";
+import gemini from './functions/gemini.js';
 
 //スラッシュコマンド登録
 const commandsPath = path.join(__dirname, 'commands');
@@ -82,8 +83,10 @@ client.on("interactionCreate", async(interaction) => {
 //現在データを取得
 cron.schedule('*/10 * * * *', async () => {
     try{
-        const updata = await fetchWebsite();
-        if(updata){
+        const checkWebsite = await fetchWebsite();
+        if(checkWebsite.isUpdate) {
+            const discriptionByGemini = await gemini.run(`以下にWebサイトのDiffを示すので、変更点を50文字程度で箇条書きで要約してください。余計な文章は入れないことと、適切に改行すること\n\n${checkWebsite.diff}\n\n要約:`);
+
             const embed = new EmbedBuilder()
                 .setColor(0x43B07C)
                 .setTitle('HP更新確認')
@@ -93,6 +96,14 @@ cron.schedule('*/10 * * * *', async () => {
                     url: 'https://github.com/starkoka/KosenRBKN-notice-bot'
                 })
                 .setDescription(`[公式HP](https://official-robocon.com/kosen/)が更新されています。\n\n更新の差分は[こちら](https://kokastar.dev/kosenRBKN-HPDiff.html)から確認できます。`)
+                .addFields(
+                    [
+                        {
+                            name: '更新概要',
+                            value: "```" + discriptionByGemini + "\n```",
+                        }
+                    ]
+                )
                 .setTimestamp()
                 .setFooter({ text: 'Developed by kokastar' });
 
