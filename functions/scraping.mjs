@@ -3,6 +3,10 @@ import {find,updateOrInsert} from './db.js';
 import {generate} from './diffpage.js';
 
 export async function fetchWebsite(){
+    const result = {
+        isUpdate: false,
+        diff: null
+    }
     try{
         const url = "https://official-robocon.com/kosen/";
         const res = await fetch(url);
@@ -17,18 +21,19 @@ export async function fetchWebsite(){
                 });
             }
             else{
-                return false;
+                return result;
             }
         }
 
-        generate(beforeData[0].value,html);
+        result.diff = await generate(beforeData[0].value, html);
+        result.isUpdate = true;
 
         await updateOrInsert("main","data",{dataType:"before"},{
             dataType:"before",
             value:html,
             date:new Date().toLocaleString()
         });
-        return true;
+        return result;
     }
     catch{}
 }

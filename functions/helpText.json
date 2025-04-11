@@ -37,6 +37,9 @@
           },{
             "name":"差分閲覧機能",
             "value":"> [こちらのページ](https://kokastar.dev/kosenRBKN-HPDiff.html)にアクセスすることで、差分を確認できます。"
+          },{
+            "name":"差分要約機能",
+            "value":"> Gemini 2.0 Flashを使用して差分を要約して表示しています。"
           }
         ]
       }
