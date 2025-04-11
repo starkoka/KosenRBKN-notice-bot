@@ -1,6 +1,6 @@
 {
   "name": "kosenrbkn-notice-bot",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "description": "高専ロボコン公式HPが更新されるとお知らせするbotです",
   "main": "index.mjs",
   "scripts": {
