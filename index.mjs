@@ -81,7 +81,7 @@ client.on("interactionCreate", async(interaction) => {
 });
 
 //現在データを取得
-cron.schedule('*/10 * * * *', async () => {
+cron.schedule('* * * * *', async () => {
     try{
         const checkWebsite = await fetchWebsite();
         if(checkWebsite.isUpdate) {
