@@ -7,7 +7,7 @@ const GeminiAI = new GoogleGenerativeAI(config.gemini);
 exports.run = async function (prompt) {
     let text;
     try{
-        const model = GeminiAI.getGenerativeModel({ model: "gemini-2.0-flash"});
+        const model = GeminiAI.getGenerativeModel({ model: "gemini-3.1-flash-lite-preview"});
         const result = await model.generateContent(prompt);
         const response = result.response;
         text = response.text();
@@ -15,7 +15,7 @@ exports.run = async function (prompt) {
     }
     catch(err){
         await system.error(`Geminiからのレスポンスを受信できませんでした`, err, "Gemini-API使用");
-        return null;
+        return "Geminiからのレスポンスを受信できませんでした。";
     }
     return text;
 }
