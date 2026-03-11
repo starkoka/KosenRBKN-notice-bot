@@ -1,4 +1,4 @@
-const {EmbedBuilder} = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const config = require("../config.json");
 
 /***
@@ -6,7 +6,7 @@ const config = require("../config.json");
  * @param message ログの本文
  * @param title ログのタイトル。省略可
  */
-exports.log = async function func(message,title) {
+exports.log = async function func(message, title) {
     const date = new Date().toLocaleString(); // YYYY/MM/DD hh:mm:ss形式に変換
     console.log(`${title ?? "システムログ"} ----\n${(message.trim().split("```").join(''))}\n--------${date}\n`);
     const embed = new EmbedBuilder()
@@ -17,7 +17,7 @@ exports.log = async function func(message,title) {
         .setFooter({ text: 'Discord Log System' });
 
     const channel = await client.channels.fetch(config.logSystem);
-    await channel.send({embeds: [embed]});
+    await channel.send({ embeds: [embed] });
 }
 
 /***
@@ -26,7 +26,7 @@ exports.log = async function func(message,title) {
  * @param error エラーオブジェクト。error.stackが存在する場合にそれが送られる。省略可
  * @param title エラーメッセージのタイトル。省略可
  */
-exports.error = async function func(message,error= {stack:""},title="エラー") {
+exports.error = async function func(message, error = { stack: "" }, title = "エラー") {
     const embed = new EmbedBuilder()
         .setColor(0xFF0000)
         .setTitle(title)
@@ -36,15 +36,22 @@ exports.error = async function func(message,error= {stack:""},title="エラー")
     const date = new Date().toLocaleString(); // YYYY/MM/DD hh:mm:ss形式に変換
     console.error(`${title} ----\n${(message.trim().split("```").join(''))}\n\n${error.stack}\n\n--------${date}\n`);
 
-    const errorChannel = await client.channels.fetch(config.errorSystem);
-    await errorChannel.send({embeds: [embed]});
-    await errorChannel.send(`\`\`\`\n${error.stack}\n\`\`\``);
+    let errorStack = error && error.stack ? String(error.stack) : String(error);
+    if (errorStack.length > 1900) {
+        errorStack = errorStack.substring(0, 1900) + "...\n(truncated)";
+    }
 
-    const logChannel = await client.channels.fetch(config.logSystem);
-    await logChannel.send({embeds: [embed]});
-    await logChannel.send(`\`\`\`\n${error.stack}\n\`\`\``);
+    try {
+        const errorChannel = await client.channels.fetch(config.errorSystem);
+        await errorChannel.send({ embeds: [embed] });
+        await errorChannel.send(`\`\`\`\n${errorStack}\n\`\`\``);
 
-
+        const logChannel = await client.channels.fetch(config.logSystem);
+        await logChannel.send({ embeds: [embed] });
+        await logChannel.send(`\`\`\`\n${errorStack}\n\`\`\``);
+    } catch (sendErr) {
+        console.error("Discordへのエラーログ送信に失敗しました:", sendErr);
+    }
 }
 
 /***
@@ -52,7 +59,7 @@ exports.error = async function func(message,error= {stack:""},title="エラー")
  * @param message ログの本文
  * @param title ログのタイトル。省略可
  */
-exports.warn = async function func(message,title="警告") {
+exports.warn = async function func(message, title = "警告") {
     const date = new Date().toLocaleString(); // YYYY/MM/DD hh:mm:ss形式に変換
     console.warn(`${title} ----\n${(message.trim().split("```").join(''))}\n--------${date}\n`);
     const embed = new EmbedBuilder()
@@ -65,7 +72,7 @@ exports.warn = async function func(message,title="警告") {
     const logChannel = await client.channels.fetch(config.logSystem);
     const errorChannel = await client.channels.fetch(config.errorSystem);
 
-    await logChannel.send({embeds: [embed]});
-    await errorChannel.send({embeds: [embed]});
+    await logChannel.send({ embeds: [embed] });
+    await errorChannel.send({ embeds: [embed] });
 }
 
