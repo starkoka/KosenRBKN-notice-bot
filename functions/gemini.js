@@ -14,7 +14,11 @@ exports.run = async function (prompt) {
         if (text && text.length > 1000) {
             text = text.substring(0, 1000) + '...';
         }
-        await system.log(`Geminiからのレスポンスを受信`, "Gemini-API使用");
+        try {
+            await system.log(`Geminiからのレスポンスを受信`, "Gemini-API使用");
+        } catch (logErr) {
+            console.error("Failed to send log to Discord:", logErr);
+        }
     }
     catch (err) {
         try {

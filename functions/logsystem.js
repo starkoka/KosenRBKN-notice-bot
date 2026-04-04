@@ -1,6 +1,18 @@
 const { EmbedBuilder } = require("discord.js");
 const config = require("../config.json");
 
+async function sendToChannel(channelId, payloads, label) {
+    try {
+        const channel = await client.channels.fetch(channelId);
+
+        for (const payload of payloads) {
+            await channel.send(payload);
+        }
+    } catch (sendErr) {
+        console.error(`Discordへのログ送信に失敗しました (${label}):`, sendErr);
+    }
+}
+
 /***
  * ログをコンソールとdiscordに送信する
  * @param message ログの本文
@@ -16,8 +28,11 @@ exports.log = async function func(message, title) {
         .setTimestamp()
         .setFooter({ text: 'Discord Log System' });
 
-    const channel = await client.channels.fetch(config.logSystem);
-    await channel.send({ embeds: [embed] });
+    await sendToChannel(
+        config.logSystem,
+        [{ embeds: [embed] }],
+        "logSystem"
+    );
 }
 
 /***
@@ -41,17 +56,24 @@ exports.error = async function func(message, error = { stack: "" }, title = "エ
         errorStack = errorStack.substring(0, 1900) + "...\n(truncated)";
     }
 
-    try {
-        const errorChannel = await client.channels.fetch(config.errorSystem);
-        await errorChannel.send({ embeds: [embed] });
-        await errorChannel.send(`\`\`\`\n${errorStack}\n\`\`\``);
-
-        const logChannel = await client.channels.fetch(config.logSystem);
-        await logChannel.send({ embeds: [embed] });
-        await logChannel.send(`\`\`\`\n${errorStack}\n\`\`\``);
-    } catch (sendErr) {
-        console.error("Discordへのエラーログ送信に失敗しました:", sendErr);
-    }
+    await Promise.allSettled([
+        sendToChannel(
+            config.errorSystem,
+            [
+                { embeds: [embed] },
+                `\`\`\`\n${errorStack}\n\`\`\``
+            ],
+            "errorSystem"
+        ),
+        sendToChannel(
+            config.logSystem,
+            [
+                { embeds: [embed] },
+                `\`\`\`\n${errorStack}\n\`\`\``
+            ],
+            "logSystem"
+        )
+    ]);
 }
 
 /***
@@ -69,10 +91,16 @@ exports.warn = async function func(message, title = "警告") {
         .setTimestamp()
         .setFooter({ text: 'Discord Log System' });
 
-    const logChannel = await client.channels.fetch(config.logSystem);
-    const errorChannel = await client.channels.fetch(config.errorSystem);
-
-    await logChannel.send({ embeds: [embed] });
-    await errorChannel.send({ embeds: [embed] });
+    await Promise.allSettled([
+        sendToChannel(
+            config.logSystem,
+            [{ embeds: [embed] }],
+            "logSystem"
+        ),
+        sendToChannel(
+            config.errorSystem,
+            [{ embeds: [embed] }],
+            "errorSystem"
+        )
+    ]);
 }
-
