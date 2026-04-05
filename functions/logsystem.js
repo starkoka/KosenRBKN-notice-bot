@@ -1,12 +1,24 @@
-const {EmbedBuilder} = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const config = require("../config.json");
+
+async function sendToChannel(channelId, payloads, label) {
+    try {
+        const channel = await client.channels.fetch(channelId);
+
+        for (const payload of payloads) {
+            await channel.send(payload);
+        }
+    } catch (sendErr) {
+        console.error(`Discordへのログ送信に失敗しました (${label}):`, sendErr);
+    }
+}
 
 /***
  * ログをコンソールとdiscordに送信する
  * @param message ログの本文
  * @param title ログのタイトル。省略可
  */
-exports.log = async function func(message,title) {
+exports.log = async function func(message, title) {
     const date = new Date().toLocaleString(); // YYYY/MM/DD hh:mm:ss形式に変換
     console.log(`${title ?? "システムログ"} ----\n${(message.trim().split("```").join(''))}\n--------${date}\n`);
     const embed = new EmbedBuilder()
@@ -16,8 +28,11 @@ exports.log = async function func(message,title) {
         .setTimestamp()
         .setFooter({ text: 'Discord Log System' });
 
-    const channel = await client.channels.fetch(config.logSystem);
-    await channel.send({embeds: [embed]});
+    await sendToChannel(
+        config.logSystem,
+        [{ embeds: [embed] }],
+        "logSystem"
+    );
 }
 
 /***
@@ -26,7 +41,7 @@ exports.log = async function func(message,title) {
  * @param error エラーオブジェクト。error.stackが存在する場合にそれが送られる。省略可
  * @param title エラーメッセージのタイトル。省略可
  */
-exports.error = async function func(message,error= {stack:""},title="エラー") {
+exports.error = async function func(message, error = { stack: "" }, title = "エラー") {
     const embed = new EmbedBuilder()
         .setColor(0xFF0000)
         .setTitle(title)
@@ -36,15 +51,29 @@ exports.error = async function func(message,error= {stack:""},title="エラー")
     const date = new Date().toLocaleString(); // YYYY/MM/DD hh:mm:ss形式に変換
     console.error(`${title} ----\n${(message.trim().split("```").join(''))}\n\n${error.stack}\n\n--------${date}\n`);
 
-    const errorChannel = await client.channels.fetch(config.errorSystem);
-    await errorChannel.send({embeds: [embed]});
-    await errorChannel.send(`\`\`\`\n${error.stack}\n\`\`\``);
+    let errorStack = error && error.stack ? String(error.stack) : String(error);
+    if (errorStack.length > 1900) {
+        errorStack = errorStack.substring(0, 1900) + "...\n(truncated)";
+    }
 
-    const logChannel = await client.channels.fetch(config.logSystem);
-    await logChannel.send({embeds: [embed]});
-    await logChannel.send(`\`\`\`\n${error.stack}\n\`\`\``);
-
-
+    await Promise.allSettled([
+        sendToChannel(
+            config.errorSystem,
+            [
+                { embeds: [embed] },
+                `\`\`\`\n${errorStack}\n\`\`\``
+            ],
+            "errorSystem"
+        ),
+        sendToChannel(
+            config.logSystem,
+            [
+                { embeds: [embed] },
+                `\`\`\`\n${errorStack}\n\`\`\``
+            ],
+            "logSystem"
+        )
+    ]);
 }
 
 /***
@@ -52,7 +81,7 @@ exports.error = async function func(message,error= {stack:""},title="エラー")
  * @param message ログの本文
  * @param title ログのタイトル。省略可
  */
-exports.warn = async function func(message,title="警告") {
+exports.warn = async function func(message, title = "警告") {
     const date = new Date().toLocaleString(); // YYYY/MM/DD hh:mm:ss形式に変換
     console.warn(`${title} ----\n${(message.trim().split("```").join(''))}\n--------${date}\n`);
     const embed = new EmbedBuilder()
@@ -62,10 +91,16 @@ exports.warn = async function func(message,title="警告") {
         .setTimestamp()
         .setFooter({ text: 'Discord Log System' });
 
-    const logChannel = await client.channels.fetch(config.logSystem);
-    const errorChannel = await client.channels.fetch(config.errorSystem);
-
-    await logChannel.send({embeds: [embed]});
-    await errorChannel.send({embeds: [embed]});
+    await Promise.allSettled([
+        sendToChannel(
+            config.logSystem,
+            [{ embeds: [embed] }],
+            "logSystem"
+        ),
+        sendToChannel(
+            config.errorSystem,
+            [{ embeds: [embed] }],
+            "errorSystem"
+        )
+    ]);
 }
-
